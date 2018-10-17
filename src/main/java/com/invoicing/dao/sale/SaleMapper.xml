@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.invoicing.dao.sale.SaleMapper">
+    <insert id="addSale" parameterType="Sale">
+        insert into sale (price, quantity, totalPrice, saleDate, userId, productId)
+        values (#{price}, #{quantity}, #{totalPrice}, #{saleDate}, #{userId}, #{productId})
+    </insert>
+
+    <select id="getSalesList" resultType="Sale">
+        SELECT *,(SELECT realName FROM users WHERE id=sale.`userId`)AS realName,(SELECT productName FROM product WHERE
+        id=sale.`productid`)AS productName from sale
+        <if test="keyWord==0">
+            order by saledate desc
+        </if>
+        <if test="keyWord==1">
+            order by totalprice desc
+        </if>
+        <if test="PageFirst!=null and PageSize!=null">
+            limit #{PageFirst},#{PageSize}
+        </if>
+    </select>
+
+    <select id="getCount" resultType="Integer">
+        SELECT count(1) from sale
+    </select>
+</mapper>
